@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Модификации DPLL</title>
+        <link rel="stylesheet" href="page1.css">
+    </head>
+    <body>
+<script src = "script_mod.js"></script>
+
+<div id="instruction">
+    <p id="title">Инструкция по вводу:</p>
+    <ul>
+     <li><p>Обязательно использовать скобки для написания выражения. Даже если в формуле коньюнкция с одной переменной.</p>
+         <p>Пример: (x1 V x2 V x3) ^ (!x1)</p></li>
+     <li>Для отрицания использовать символ "!"</li>
+     <li>Переменные ОБЯЗАТЕЛЬНО должны иметь имя "x" и быть пронумерованы от 1 до N по порядку (т.е. x1,x2,x3, а не x1,x4,x6)</li>
+   </ul>
+</div>   
+<div class="input">
+<p id="title"> Модификации DPLL </p>	
+<form name = "Form">
+<p>Введите формулу в КНФ (^ - умножить, v - сложить: главное, чтобы в скобках)</p>
+<input type = "text" name = "form" size = "100">
+<input  type="button" name="button" value="Проверить" onClick = "SolveSystem()">
+</div>
+<div class="output">
+<p>Выполнимость формулы (если выполняется, то выдаёт набор переменных)</p>
+<TEXTAREA NAME = "textarea" readonly Rows = 15 cols = 60></TEXTAREA>
+<input type="reset" name="reset" value="Сброс">
+</div>
+<a href="index.html"><img id="moveto" src="arrow1.png" alt="Переход к DPLL-алгоритму" title="Переход к DPLL-алгоритму"></a>
+
+</form>
+</body>
+
+</html>

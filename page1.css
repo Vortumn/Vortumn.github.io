@@ -1,0 +1,121 @@
+body {
+    background-image: url(background.jpg);
+}
+p{
+    color: white;
+    text-align: left;
+    font-family: HelveticaRegular;
+}
+div{
+    opacity: 0.9;
+}
+#title{
+    text-align: center;
+    font-size: 20px;
+    font-family: HelveticaRegular;
+    color: #fff;
+}
+ul{   
+    color: white;
+    font-family: HelveticaRegular;
+}
+#moveto{
+    opacity: 0.7;
+    position: absolute;
+    left: 50px;
+    top: 300px;
+    height: 100px;
+    width: 100px;
+    border-width: 10px;
+    border-radius: 5px;  
+}
+#moveto:hover{
+    opacity: 0.85;
+    position: absolute;
+    left: 40px;
+    top: 290px;
+    height: 120px;
+    width: 120px; 
+}
+#instruction{
+    position: absolute;
+    top: 75px;
+    left: 1200px;
+    height: max-content;
+    width: 300px;
+    border-radius: 10px;
+    background: #24646e;
+    padding-right: 10px;
+    border-color: #1c4d55;
+    border-style: double;
+    border-width: 5px;
+}
+input[type="text"] {
+    color: #808080;
+}
+input[type="text"]:focus {
+
+}
+input[type="button"] {
+    font-family: HelveticaRegular;
+    border-radius: 3px;
+    background-color: #fff;
+    border-color: #dddcdc;
+}
+input[type="reset"] {
+    font-family: HelveticaRegular;
+    border-radius: 3px;    
+    background-color: #fff;
+    border-color: #dddcdc;    
+    position: relative;
+    left: 8px; 
+    width: 100px;
+    bottom: 7px;
+}
+input[type="button"]:hover {
+    border-radius: 3px;
+    background: #cdcdcd;
+    border-color: #cdcdcd;
+}
+input[type="reset"]:hover {
+    border-radius: 3px;
+    background: #cdcdcd;
+    border-color: #cdcdcd;   
+}
+textarea{
+    
+}
+.input{
+    position: absolute;
+    left: 375px;
+    top: 70px;
+    height: max-content;
+    width: max-content;
+    border-radius: 10px;
+    background:  #24646e;
+    margin: 5px;
+    padding: 5px;
+    border-color: #1c4d55;
+    border-style: double;
+    border-width: 5px;
+}
+.output{
+    position: absolute;
+    left: 500px;
+    top: 220px;
+    height: max-content;
+    width: max-content;
+    border-radius: 10px;
+    background: #24646e;  
+    margin: 5px; 
+    padding: 5px;
+    border-color: #1c4d55;
+    border-style: double;
+    border-width: 5px;
+}
+@font-face {
+font-family: "HelveticaRegular"; 
+src: url("helvetica/HelveticaRegular/HelveticaRegular.ttf") format("truetype"); 
+font-style: normal; 
+font-weight: normal; 
+} 
