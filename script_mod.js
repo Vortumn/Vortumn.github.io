@@ -93,7 +93,10 @@ curr++;
 if(exclamation == N)
 {
   for(key in x_values)
-    x_values[key] = false;
+    {
+      if(key in units) x_values[key] = units[key];
+      else x_values[key] = false;
+    }
 }
 //теперь создаём массив для того, чтобы знать, что с чем перемножается 
 var i = 0;
@@ -237,7 +240,16 @@ function FindSolution(N, arr)
   var ribbon = Ribbon(N);
   var d=window.document.Form;
   var solves = Solve(arr); //проверка первичного набора
-     
+
+  d.textarea.value = "";
+  d.textarea.value +="Первостепенный набор значений задаётся всеми единицами для переменных (исключая unit-переменные), дальше производится перебор значений с проверкой переменной ветвления" + "\n" + "\n";
+  var k = 1;
+
+   d.textarea.value += "Первостепенный набор: " + "\n";
+      for(key in x_values)
+      {
+       d.textarea.value += key + " : " + x_values[key] + "\n";
+      }
 
   var k = 1;
   while(k < ribbon.length)
@@ -248,11 +260,17 @@ function FindSolution(N, arr)
        }
        
      var ch =  "x" + ribbon.charAt(k); //находим x в ленте, который мы будем менять
+     d.textarea.value += "Переменная ветвления: " + ch;
+
      while (ch in units)
      {
+      d.textarea.value += " (unit-переменная, поэтому выбираем следующую)" + "\n";
       k+=2;
       ch =  "x" + ribbon.charAt(k);
+      d.textarea.value += "Переменная ветвления: " + ch;
      }
+    d.textarea.value += "\n" + "\n";
+
      k+=2;
 
      //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -260,9 +278,10 @@ function FindSolution(N, arr)
      //alert(x_values[x_num]);
      var empty_flag = 0;
      var has_current_x = 0;
-      
+      d.textarea.value += "Производим анализ клауз для необходимого приписания" + "\n";
       for (var i = 0; i < clauses.length;i++) //анализ клаузы на необходимость обязательного присваивания
         {
+          d.textarea.value += "Клауза ";
           var m = 0;
             while(m < clauses[i].length)
             {
@@ -271,18 +290,23 @@ function FindSolution(N, arr)
                 if (clauses[i][m].value == 1)
                   {
                     empty_flag = 1; //клауза не пустая
+                    d.textarea.value +=  (i+1) + " не требует необходимого приписания " + "\n";
+                    break;
                   }
                }
                 if (clauses[i][m].name == ch)
                    {
                      has_current_x = 1; 
+                     d.textarea.value += (i+1)  +" Содержит переменную ветвления " + ch + "\n";
                    }
                m++;
             }  
+          if (empty_flag == 0) d.textarea.value +=  " требует необходимого приписания " + "\n";
           if (has_current_x == 1 && empty_flag == 0) break;
           if (has_current_x == 0) empty_flag = 1;
         }
     
+
   if(empty_flag == 0) //действительно есть пустая клауза
    {
    for (var i = 0; i < clauses.length;i++)
@@ -294,30 +318,37 @@ function FindSolution(N, arr)
         {
        if (clauses[i][m].value == 0) //если текущая переменная - 0, значит, меняем её
          {
+          d.textarea.value += "Значение текущей переменной ветвления " + ch + " = " + x_values[clauses[i][m].name] + " значит, меняем его на противоположное \n" ;
            clauses[i][m].value = !clauses[i][m].value;
            x_values[clauses[i][m].name] = !x_values[clauses[i][m].name];
            var solves = Solve(arr);
-           if(solves == 1)
-            {
-             break;
-            }
          }
         }
-        m++;
+                m++;
         //если не != 0, то не меняем переменную
     }
    }
    }
+   if(solves == 1)
+            {
+             break;
+            }
+     d.textarea.value += "Рассматриваемый набор: " + "\n";
+      for(key in x_values)
+      {
+       d.textarea.value += key + " : " + x_values[key] + "\n";
+      }
      //////////////////////////////////////////////////////////////////////////////////////////////////////////////
      
     }
 
 
-d.textarea.value = "";      
+     
 if (solves == 1)
   {
     //alert("You find solution");
     var stroke_for_print = "";
+    d.textarea.value += "Решение: " + "\n";
     for(key in x_values)
     {
      d.textarea.value += key + " : " + x_values[key] + "\n";

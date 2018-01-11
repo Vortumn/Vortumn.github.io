@@ -12,15 +12,60 @@ function SolveSystem()
 
   else var str = d.form.value;
 
-  //сначала находим переменные функции, делаем под них словарик и производим подсчёт N
-  
+//где-то до словарика займемся проверкой на юниты и другой неинтересной деятельностью
+
+units = {}; //cловарь под unit-переменные
+var i = 0;
+var f;
+while (i < str.length)
+{
+    var f = 0;
+    if(str.charAt(i) == "(")
+    {
+       
+       var unit_coeff;
+       var unit_value;
+      while(str.charAt(i) != ")")
+        {
+        i++;
+        if (str.charAt(i) == "x")
+        {
+            f++;
+            var not = 0;
+            i--;
+            if (str.charAt(i) == "!") //костыль для проверки нужного присваивания для unit-а
+            {
+            not = 1;
+            }
+            i++;
+
+          i++;
+          unit_coeff = str.charAt(i);
+          if (not == 0) unit_value = true;
+          else unit_value = false;
+
+          i++;
+        }
+        }
+        if (f == 1) units["x" + unit_coeff] = unit_value; //добавление в словарь unit-ов ключ-значение
+    }
+   i++;
+  }
+
+
+  //сначала находим переменные функции, делаем под них словарик и производим подсчёт N 
   var i = 0;
   while(i < str.length)
   {
     if (str.charAt(i) == "x")
     {
     i++;
-    x_values["x"+str.charAt(i)] = true;
+    var x = "x"+str.charAt(i);
+    if (x in units)
+    {
+    x_values[x] = units[x];
+    }
+    else x_values[x] = true;
     }
     i++;
   }
@@ -44,7 +89,10 @@ curr++;
 if(exclamation == N)
 {
   for(key in x_values)
-    x_values[key] = false;
+    {
+      if(key in units) x_values[key] = units[key];
+      else x_values[key] = false;
+    }
 }
 
 //теперь создаём массив для того, чтобы знать, что с чем перемножается 
@@ -146,16 +194,35 @@ function FindSolution(N, arr)
   var solves = Solve(arr);
   var ribbon = Ribbon(N);
   var d=window.document.Form;
-
+  d.textarea.value = "";
+  d.textarea.value += "Первостепенный набор значений задаётся всеми единицами для переменных (исключая unit-переменные), дальше производится перебор значений с проверкой переменной ветвления" + "\n" + "\n";
   var k = 1;
+
+   d.textarea.value += "Первостепенный набор: " + "\n";
+      for(key in x_values)
+      {
+       d.textarea.value += key + " : " + x_values[key] + "\n";
+      }
+
  while(k < ribbon.length)
     {
       if(solves == 1)
        {
          break;
        }
+
      var x_num =  "x" + ribbon.charAt(k); //находим x в ленте, который мы будем менять
-     k+=2;
+     d.textarea.value += "Переменная ветвления: " + x_num;
+     while(x_num in units)
+     {
+      d.textarea.value += " (unit-переменная, поэтому выбираем следующую)" + "\n";
+      k+=2;
+      x_num =  "x" + ribbon.charAt(k); //делаем скип по ленте для юнита
+      d.textarea.value += "Переменная ветвления: " + x_num;
+     }
+      d.textarea.value += "\n" + "\n";
+      k+=2;
+
      x_values[x_num] = !x_values[x_num]; //меняем значение выбранного по ленте x
      //alert(x_values[x_num]);
      solves = Solve(arr);
@@ -163,12 +230,20 @@ function FindSolution(N, arr)
        {
          break;
        }
+       
+      d.textarea.value += "Рассматриваемый набор: " + "\n";
+      for(key in x_values)
+      {
+       d.textarea.value += key + " : " + x_values[key] + "\n";
+      }
+
     }
-d.textarea.value = "";      
+
 if (solves == 1)
   {
     //alert("You find solution");
     var stroke_for_print = "";
+    d.textarea.value += "Решение: " + "\n";
     for(key in x_values)
     {
      d.textarea.value += key + " : " + x_values[key] + "\n";
@@ -192,3 +267,12 @@ else (alert("Sorry but we can't find solution"));
 
 //alert(Ribbon(N));
 //последний штрих, блин
+
+/*
+Exception: SyntaxError: expected expression, got '}'
+onclick@file:///C:/Users/vrtmn/Desktop/DPLL/index.html:1:1
+*/
+/*
+Exception: ReferenceError: invalid assignment left-hand side
+@Scratchpad/4:218
+*/
