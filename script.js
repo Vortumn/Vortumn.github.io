@@ -31,7 +31,22 @@ function SolveSystem()
   {
    N++;
   }
-  
+
+//маленький цикл проверки на чистые переменные в самом начале (чтобы попасть в набор с одного выстела)
+var exclamation = 0;
+var curr = 0;
+while(curr < str.length)
+{
+if(str.charAt(curr) == "!") exclamation++;
+curr++;
+}
+
+if(exclamation == N)
+{
+  for(key in x_values)
+    x_values[key] = false;
+}
+
 //теперь создаём массив для того, чтобы знать, что с чем перемножается 
 var i = 0;
 var arr = [];
@@ -122,6 +137,7 @@ if (N>2)
 
   return curr_str + "x1" + curr_str;
   }
+else return curr_str + "x1" + curr_str;
 }
 
 
@@ -132,8 +148,12 @@ function FindSolution(N, arr)
   var d=window.document.Form;
 
   var k = 1;
-  while(k < ribbon.length)
+ while(k < ribbon.length)
     {
+      if(solves == 1)
+       {
+         break;
+       }
      var x_num =  "x" + ribbon.charAt(k); //находим x в ленте, который мы будем менять
      k+=2;
      x_values[x_num] = !x_values[x_num]; //меняем значение выбранного по ленте x

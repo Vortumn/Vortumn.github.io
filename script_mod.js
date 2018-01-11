@@ -35,6 +35,20 @@ function SolveSystem()
    N++;
   }
   
+//маленький цикл проверки на чистые переменные в самом начале (чтобы попасть в набор с одного выстела)
+var exclamation = 0;
+var curr = 0;
+while(curr < str.length)
+{
+if(str.charAt(curr) == "!") exclamation++;
+curr++;
+}
+
+if(exclamation == N)
+{
+  for(key in x_values)
+    x_values[key] = false;
+}
 //теперь создаём массив для того, чтобы знать, что с чем перемножается 
 var i = 0;
 var arr = [];
@@ -163,20 +177,27 @@ if (N>2)
 
   return curr_str + "x1" + curr_str;
   }
+else return curr_str + "x1" + curr_str;
 }
+
 
 
 
 function FindSolution(N, arr)
 {
-  var solves = Solve(arr);
   var ribbon = Ribbon(N);
   var d=window.document.Form;
+  solves = Solve(arr); //проверка первичного набора
+     
 
   var k = 1;
   while(k < ribbon.length)
     {
-      
+      if(solves == 1)
+       {
+         break;
+       }
+       
      var ch =  "x" + ribbon.charAt(k); //находим x в ленте, который мы будем менять
      k+=2;
      //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -219,24 +240,15 @@ function FindSolution(N, arr)
          {
            clauses[i][m].value = !clauses[i][m].value;
            x_values[clauses[i][m].name] = !x_values[clauses[i][m].name];
+           solves = Solve[arr];
          }
         }
         //если не != 0, то не меняем переменную
     }
    }
    }
-   
-  if(empty_flag = 1) //если же клауза не обращается в ноль, можно менять спокойно
-     {
-       x_values[ch] = !x_values[ch];
-    }
-      
      //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-     solves = Solve(arr);
-     if(solves == 1)
-       {
-         break;
-       }
+     
     }
 
 
@@ -282,4 +294,12 @@ Exception: SyntaxError: expected expression, got '}'
 /*
 Exception: SyntaxError: expected expression, got '}'
 @Scratchpad/1:99
+*/
+/*
+Exception: SyntaxError: unlabeled break must be inside loop or switch
+onclick@file:///C:/Users/vrtmn/Desktop/DPLL/page1.html:1:1
+*/
+/*
+Exception: SyntaxError: unlabeled break must be inside loop or switch
+onclick@file:///C:/Users/vrtmn/Desktop/DPLL/page1.html:1:1
 */
