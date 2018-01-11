@@ -15,15 +15,62 @@ function SolveSystem()
 
   else var str = d.form.value;
 
-  //сначала находим переменные функции, делаем под них словарик и производим подсчёт N
-  
+
+//где-то до словарика займемся проверкой на юниты и другой неинтересной деятельностью
+
+units = {}; //cловарь под unit-переменные
+var i = 0;
+var f;
+while (i < str.length)
+{
+    var f = 0;
+    if(str.charAt(i) == "(")
+    {
+       
+       var unit_coeff;
+       var unit_value;
+      while(str.charAt(i) != ")")
+        {
+        i++;
+        if (str.charAt(i) == "x")
+        {
+            f++;
+            var not = 0;
+            i--;
+            if (str.charAt(i) == "!") //костыль для проверки нужного присваивания для unit-а
+            {
+            not = 1;
+            }
+            i++;
+
+          i++;
+          unit_coeff = str.charAt(i);
+          if (not == 0) unit_value = true;
+          else unit_value = false;
+
+          i++;
+        }
+        }
+        if (f == 1) units["x" + unit_coeff] = unit_value; //добавление в словарь unit-ов ключ-значение
+    }
+   i++;
+  }
+
+
+
+  //сначала находим переменные функции, делаем под них словарик и производим подсчёт N 
   var i = 0;
   while(i < str.length)
   {
     if (str.charAt(i) == "x")
     {
     i++;
-    x_values["x"+str.charAt(i)] = true;
+    var x = "x"+str.charAt(i);
+    if (x in units)
+    {
+    x_values[x] = units[x];
+    }
+    else x_values[x] = true;
     }
     i++;
   }
@@ -34,7 +81,6 @@ function SolveSystem()
   {
    N++;
   }
-  
 //маленький цикл проверки на чистые переменные в самом начале (чтобы попасть в набор с одного выстела)
 var exclamation = 0;
 var curr = 0;
@@ -109,8 +155,11 @@ for(i = 0; i < arr.length; i++) //прогулка по массиву
    }
      clauses.push(x_n);
   }
+//x_values = {x1 : true, x2 : true, x3 : true, x4 : false, x5 : true};
+
  FindSolution(N,arr); //функция, выводящая решение в окно
 }
+
 
 function addEntry(arr, name, value) {
   arr.push({
@@ -148,7 +197,7 @@ for(i = 0; i < arr.length; i++) //прогулка по массиву
           }
       } 
      mult = mult && sum; //произведение значений внутри скобок между собой
-     if (mult == 0) break;
+     //if (mult == 0) break;
   }
 return mult;
 }
@@ -187,7 +236,7 @@ function FindSolution(N, arr)
 {
   var ribbon = Ribbon(N);
   var d=window.document.Form;
-  solves = Solve(arr); //проверка первичного набора
+  var solves = Solve(arr); //проверка первичного набора
      
 
   var k = 1;
@@ -199,11 +248,17 @@ function FindSolution(N, arr)
        }
        
      var ch =  "x" + ribbon.charAt(k); //находим x в ленте, который мы будем менять
+     while (ch in units)
+     {
+      k+=2;
+      ch =  "x" + ribbon.charAt(k);
+     }
      k+=2;
+
      //////////////////////////////////////////////////////////////////////////////////////////////////////////////
      //x_values[x_num] = !x_values[x_num]; //меняем значение выбранного по ленте x
      //alert(x_values[x_num]);
-     var empty_flag = 1;
+     var empty_flag = 0;
      var has_current_x = 0;
       
       for (var i = 0; i < clauses.length;i++) //анализ клаузы на необходимость обязательного присваивания
@@ -215,7 +270,7 @@ function FindSolution(N, arr)
               {
                 if (clauses[i][m].value == 1)
                   {
-                    empty_flag = 0; //клауза не пустая
+                    empty_flag = 1; //клауза не пустая
                   }
                }
                 if (clauses[i][m].name == ch)
@@ -224,10 +279,11 @@ function FindSolution(N, arr)
                    }
                m++;
             }  
-          if (has_current_x = 0) empty_flag = 1; //делаем проверку, что в пустой клаузе есть наш х
+          if (has_current_x == 1 && empty_flag == 0) break;
+          if (has_current_x == 0) empty_flag = 1;
         }
     
-  if(empty_flag = 0) //действительно есть пустая клауза
+  if(empty_flag == 0) //действительно есть пустая клауза
    {
    for (var i = 0; i < clauses.length;i++)
     {
@@ -240,9 +296,14 @@ function FindSolution(N, arr)
          {
            clauses[i][m].value = !clauses[i][m].value;
            x_values[clauses[i][m].name] = !x_values[clauses[i][m].name];
-           solves = Solve[arr];
+           var solves = Solve(arr);
+           if(solves == 1)
+            {
+             break;
+            }
          }
         }
+        m++;
         //если не != 0, то не меняем переменную
     }
    }
@@ -301,5 +362,9 @@ onclick@file:///C:/Users/vrtmn/Desktop/DPLL/page1.html:1:1
 */
 /*
 Exception: SyntaxError: unlabeled break must be inside loop or switch
+onclick@file:///C:/Users/vrtmn/Desktop/DPLL/page1.html:1:1
+*/
+/*
+Exception: ReferenceError: invalid assignment left-hand side
 onclick@file:///C:/Users/vrtmn/Desktop/DPLL/page1.html:1:1
 */
