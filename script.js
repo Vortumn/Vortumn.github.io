@@ -1,4 +1,6 @@
 var x_values = {};
+var Free_lit = {};
+
 
 function SolveSystem()
 {
@@ -131,7 +133,8 @@ for(key in x_values)
 var i = 0;
 var arr = [];
 
-while (i < str.length){
+while (i < str.length)
+{
   if(str.charAt(i) == "(")
   {
         var stroke = '';
@@ -156,7 +159,29 @@ while (i < str.length){
   } 
   i++;  
 }
- FindSolution(N,arr); 
+//////////////////////////////////////////////////////////некоторое дерьмо
+Free_lit = {};
+var i = 1;
+var F_N = 0;
+for(key in x_values)
+{
+  if (key in units)
+  {
+    key++;
+  }
+  else 
+   {
+    Free_lit["x" + i] = key;
+    i++;
+   }
+}
+
+for(keys in Free_lit)
+{
+  F_N++;
+}
+
+ FindSolution(N,arr, F_N); 
 }
 
 
@@ -221,10 +246,11 @@ else return curr_str + "x1" + curr_str;
 }
 
 
-function FindSolution(N, arr)
+function FindSolution(N, arr, F_N)
 {
   var solves = Solve(arr);
-  var ribbon = Ribbon(N);
+  if (F_N != 0) var ribbon = Ribbon(F_N);
+  else ribbon = Ribbon(N);
   var d=window.document.Form;
   d.textarea.value = "";
   d.textarea.value += "Первостепенный набор значений задаётся всеми единицами для переменных (исключая unit-переменные), дальше производится перебор значений с проверкой переменной ветвления" + "\n" + "\n";
@@ -245,7 +271,8 @@ function FindSolution(N, arr)
          break;
        }
 
-     var x_num =  "x" + ribbon.charAt(k); //находим x в ленте, который мы будем менять
+     var ch =  "x" + ribbon.charAt(k); //находим x в ленте, который мы будем менять
+     var x_num = Free_lit[ch];
      
      while(x_num in units)
      {
@@ -311,4 +338,8 @@ onclick@file:///C:/Users/vrtmn/Desktop/DPLL/index.html:1:1
 /*
 Exception: ReferenceError: invalid assignment left-hand side
 @Scratchpad/4:218
+*/
+/*
+Exception: SyntaxError: expected expression, got '}'
+@Scratchpad/2:176
 */

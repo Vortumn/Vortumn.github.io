@@ -198,7 +198,28 @@ for(i = 0; i < arr.length; i++) //прогулка по массиву
   }
 //x_values = {x1 : true, x2 : true, x3 : true, x4 : false, x5 : true};
 
- FindSolution(N,arr); //функция, выводящая решение в окно
+Free_lit = {};
+var i = 1;
+var F_N = 0;
+for(key in x_values)
+{
+  if (key in units)
+  {
+    key++;
+  }
+  else 
+   {
+    Free_lit["x" + i] = key;
+    i++;
+   }
+}
+
+for(keys in Free_lit)
+{
+  F_N++;
+}
+
+ FindSolution(N,arr, F_N); 
 }
 
 
@@ -273,9 +294,11 @@ else return curr_str + "x1" + curr_str;
 
 
 
-function FindSolution(N, arr)
+function FindSolution(N, arr, F_N)
 {
-  var ribbon = Ribbon(N);
+  //var solves = Solve(arr);
+  if (F_N != 0) var ribbon = Ribbon(F_N);
+  else ribbon = Ribbon(N);
   var d=window.document.Form;
   var solves = Solve(arr); //проверка первичного набора
 
@@ -299,8 +322,8 @@ function FindSolution(N, arr)
          break;
        }
        
-     var ch =  "x" + ribbon.charAt(k); //находим x в ленте, который мы будем менять
-     
+    var x_num =  "x" + ribbon.charAt(k); //находим x в ленте, который мы будем менять
+     var ch = Free_lit[x_num];     
      while (ch in units)
      {
       //d.textarea.value += " (unit-переменная, поэтому выбираем следующую)" + "\n";
