@@ -246,14 +246,16 @@ function FindSolution(N, arr)
        }
 
      var x_num =  "x" + ribbon.charAt(k); //находим x в ленте, который мы будем менять
-     d.textarea.value += "\n" + "Переменная ветвления: " + x_num;
+     
      while(x_num in units)
      {
-      d.textarea.value += " (unit-переменная, поэтому выбираем следующую)" + "\n";
+     // d.textarea.value += " (unit-переменная, поэтому выбираем следующую)" + "\n";
       k+=2;
       x_num =  "x" + ribbon.charAt(k); //делаем скип по ленте для юнита
-      d.textarea.value += "Переменная ветвления: " + x_num;
+     
      }
+
+     d.textarea.value += "\n" + "Переменная ветвления: " + x_num;
       d.textarea.value += "\n";
       k+=2;
 

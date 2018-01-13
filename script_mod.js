@@ -17,8 +17,8 @@ function SolveSystem()
 
 
 //где-то до словарика займемся проверкой на юниты и другой неинтересной деятельностью
-
 units = {}; //cловарь под unit-переменные
+/*
 var i = 0;
 var f;
 while (i < str.length)
@@ -55,8 +55,7 @@ while (i < str.length)
     }
    i++;
   }
-
-
+*/
 
   //сначала находим переменные функции, делаем под них словарик и производим подсчёт N 
   var i = 0;
@@ -81,6 +80,34 @@ while (i < str.length)
   {
    N++;
   }
+
+  //проверка чистых переменных
+for(var i = 1; i < (N+1); i++)
+{
+  var flag = 0; //переменная для провеки на наличие разницы в знаках (на проверку чистых переменных)
+  var curr = 0; 
+  var value_met = 0; //количество встреч переменной в формуле
+  while (curr < str.length)
+    {
+      if (str.charAt(curr) == "x")
+        {
+        curr++;
+        if (str.charAt(curr) == i) //если нашли в цикле текущую просматриваемую переменную
+          {
+            value_met++;
+            curr = curr - 2;
+            if (str.charAt(curr) == "!") flag ++;
+            curr = curr + 2;
+          }
+        }
+      curr++;
+    }
+if (value_met == flag) units["x" + i] = false;
+else if (flag == 0 && value_met >= 1) units["x" + i] = true;
+
+}
+
+
 //маленький цикл проверки на чистые переменные в самом начале (чтобы попасть в набор с одного выстела)
 var exclamation = 0;
 var curr = 0;
@@ -90,7 +117,7 @@ if(str.charAt(curr) == "!") exclamation++;
 curr++;
 }
 
-if(exclamation == N)
+if(exclamation == N || exclamation > (N/2))
 {
   for(key in x_values)
     {
@@ -98,6 +125,14 @@ if(exclamation == N)
       else x_values[key] = false;
     }
 }
+
+//присваиваем сразу
+for(key in x_values)
+{
+  if(key in units) x_values[key] = units[key];
+}
+
+
 //теперь создаём массив для того, чтобы знать, что с чем перемножается 
 var i = 0;
 var arr = [];
@@ -130,6 +165,8 @@ while (i < str.length){
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
+//КЛАУЗЫ
+  
 var i = 0;
 
 for(i = 0; i < arr.length; i++) //прогулка по массиву
@@ -152,7 +189,8 @@ for(i = 0; i < arr.length; i++) //прогулка по массиву
           b++;
           name = "x" + stroke.charAt(b);
           b++;
-          value = !(x_values[name]);
+          if (name in units) value = x_values[name];
+          else value = !(x_values[name]);
           addEntry(x_n,name,value);        
         }
    }
@@ -248,7 +286,9 @@ function FindSolution(N, arr)
    d.textarea.value += "Первостепенный набор: " + "\n";
       for(key in x_values)
       {
-       d.textarea.value += key + " : " + x_values[key] + "\n";
+       d.textarea.value += key + " : " + x_values[key];
+       if (key in units) d.textarea.value += "(unit-переменная или чистая)" + "\n";
+       else d.textarea.value += "\n";
       }
 
   var k = 1;
@@ -260,75 +300,83 @@ function FindSolution(N, arr)
        }
        
      var ch =  "x" + ribbon.charAt(k); //находим x в ленте, который мы будем менять
-     d.textarea.value += "Переменная ветвления: " + ch;
-
+     
      while (ch in units)
      {
-      d.textarea.value += " (unit-переменная, поэтому выбираем следующую)" + "\n";
+      //d.textarea.value += " (unit-переменная, поэтому выбираем следующую)" + "\n";
       k+=2;
       ch =  "x" + ribbon.charAt(k);
-      d.textarea.value += "Переменная ветвления: " + ch;
+     // d.textarea.value += "Переменная ветвления: " + ch;
      }
     d.textarea.value += "\n" + "\n";
 
-     k+=2;
-
+     k+=2; 
+     
+      d.textarea.value += "Переменная ветвления: " + ch;
      //////////////////////////////////////////////////////////////////////////////////////////////////////////////
      //x_values[x_num] = !x_values[x_num]; //меняем значение выбранного по ленте x
      //alert(x_values[x_num]);
-     var empty_flag = 0;
-     var has_current_x = 0;
-      d.textarea.value += "Производим анализ клауз для необходимого приписания" + "\n";
-      for (var i = 0; i < clauses.length;i++) //анализ клаузы на необходимость обязательного присваивания
+     
+      
+      var finded_clause_num;
+      d.textarea.value += "\n"+"Производим анализ клауз для необходимого приписания" + "\n";
+      for (var i = 0; i < clauses.length;i++) //анализ клауз на необходимость обязательного присваивания
         {
-          d.textarea.value += "Клауза ";
+          var empty_flag = 0;
+          var has_current_x = 0;
           var m = 0;
-            while(m < clauses[i].length)
+            while(m < clauses[i].length) //анализ самой клаузы
             {
             if (clauses[i][m].name != ch)
               {
                 if (clauses[i][m].value == 1)
                   {
                     empty_flag = 1; //клауза не пустая
-                    d.textarea.value +=  (i+1) + " не требует необходимого приписания " + "\n";
                     break;
                   }
                }
                 if (clauses[i][m].name == ch)
                    {
                      has_current_x = 1; 
-                     d.textarea.value += (i+1)  +" Содержит переменную ветвления " + ch + "\n";
+                      d.textarea.value += "Клауза " + (i + 1) ;
+
+                     d.textarea.value += " cодержит переменную ветвления " + ch + "\n";
                    }
                m++;
             }  
-          if (empty_flag == 0) d.textarea.value +=  " требует необходимого приписания " + "\n";
-          if (has_current_x == 1 && empty_flag == 0) break;
+          //if (empty_flag == 0) 
+          if (has_current_x == 1 && empty_flag == 0)
+          {
+            d.textarea.value +=  "И требует необходимого приписания " + "\n";
+            finded_clause_num = i;
+            break;
+          }
           if (has_current_x == 0) empty_flag = 1;
         }
     
 
   if(empty_flag == 0) //действительно есть пустая клауза
-   {
-   for (var i = 0; i < clauses.length;i++)
-    {
+   {    
       var m = 0;
+      var i = finded_clause_num;
       while(m < clauses[i].length)
       {
       if (clauses[i][m].name == ch)
         {
        if (clauses[i][m].value == 0) //если текущая переменная - 0, значит, меняем её
          {
-          d.textarea.value += "Значение текущей переменной ветвления " + ch + " = " + x_values[clauses[i][m].name] + " значит, меняем его на противоположное \n" ;
+          d.textarea.value += "\n"+"Значение текущей переменной ветвления " + ch + " = " + x_values[clauses[i][m].name] + " значит, меняем его на противоположное \n" ;
            clauses[i][m].value = !clauses[i][m].value;
            x_values[clauses[i][m].name] = !x_values[clauses[i][m].name];
            var solves = Solve(arr);
          }
         }
-                m++;
+        m++;
         //если не != 0, то не меняем переменную
     }
    }
-   }
+      
+      
    if(solves == 1)
             {
              break;
