@@ -13,9 +13,8 @@ function SolveSystem()
   else var str = d.form.value;
 
 //где-то до словарика займемся проверкой на юниты и другой неинтересной деятельностью
-
 units = {}; //cловарь под unit-переменные
-var i = 0;
+/*var i = 0;
 var f;
 while (i < str.length)
 {
@@ -51,7 +50,7 @@ while (i < str.length)
     }
    i++;
   }
-
+*/
 
   //сначала находим переменные функции, делаем под них словарик и производим подсчёт N 
   var i = 0;
@@ -77,6 +76,32 @@ while (i < str.length)
    N++;
   }
 
+//проверка чистых переменных
+for(var i = 1; i < (N+1); i++)
+{
+  var flag = 0; //переменная для провеки на наличие разницы в знаках (на проверку чистых переменных)
+  var curr = 0; 
+  var value_met = 0; //количество встреч переменной в формуле
+  while (curr < str.length)
+    {
+      if (str.charAt(curr) == "x")
+        {
+        curr++;
+        if (str.charAt(curr) == i) //если нашли в цикле текущую просматриваемую переменную
+          {
+            value_met++;
+            curr = curr - 2;
+            if (str.charAt(curr) == "!") flag ++;
+            curr = curr + 2;
+          }
+        }
+      curr++;
+    }
+if (value_met == flag) units["x" + i] = false;
+else if (flag == 0 && value_met >= 1) units["x" + i] = true;
+
+}
+
 //маленький цикл проверки на чистые переменные в самом начале (чтобы попасть в набор с одного выстела)
 var exclamation = 0;
 var curr = 0;
@@ -86,7 +111,7 @@ if(str.charAt(curr) == "!") exclamation++;
 curr++;
 }
 
-if(exclamation == N)
+if(exclamation == N || exclamation > (N/2))
 {
   for(key in x_values)
     {
@@ -94,6 +119,13 @@ if(exclamation == N)
       else x_values[key] = false;
     }
 }
+
+
+for(key in x_values)
+{
+  if(key in units) x_values[key] = units[key];
+}
+
 
 //теперь создаём массив для того, чтобы знать, что с чем перемножается 
 var i = 0;
@@ -201,7 +233,9 @@ function FindSolution(N, arr)
    d.textarea.value += "Первостепенный набор: " + "\n";
       for(key in x_values)
       {
-       d.textarea.value += key + " : " + x_values[key] + "\n";
+       d.textarea.value += key + " : " + x_values[key];
+       if (key in units) d.textarea.value += "(unit-переменная или чистая)" + "\n";
+       else d.textarea.value += "\n";
       }
 
  while(k < ribbon.length)
@@ -212,7 +246,7 @@ function FindSolution(N, arr)
        }
 
      var x_num =  "x" + ribbon.charAt(k); //находим x в ленте, который мы будем менять
-     d.textarea.value += "Переменная ветвления: " + x_num;
+     d.textarea.value += "\n" + "Переменная ветвления: " + x_num;
      while(x_num in units)
      {
       d.textarea.value += " (unit-переменная, поэтому выбираем следующую)" + "\n";
@@ -220,7 +254,7 @@ function FindSolution(N, arr)
       x_num =  "x" + ribbon.charAt(k); //делаем скип по ленте для юнита
       d.textarea.value += "Переменная ветвления: " + x_num;
      }
-      d.textarea.value += "\n" + "\n";
+      d.textarea.value += "\n";
       k+=2;
 
      x_values[x_num] = !x_values[x_num]; //меняем значение выбранного по ленте x
